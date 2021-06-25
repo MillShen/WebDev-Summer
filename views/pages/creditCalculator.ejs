@@ -1,0 +1,27 @@
+<%- include('../templates/bootheader') -%>
+<%- include('../templates/menubar', {variant:'credits'}) -%>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Access Routing</title>
+  </head>
+  <body>
+    <div class="jumbotron">
+      <h1>Calculate your Brandeis Credits</h1>
+      <p>
+        Use this app to calculate your Brandeis Course Credits:
+      </p>
+    </div>
+    <form action="/calcCredits" method="post">
+      <div id="input-fields">
+        What year are you (1-4)? <input type="number" min=1 max=4><br>
+
+      </div>
+    </form>
+  </body>
+  <script type="text/javascript">
+    var inputField = document.getElementById("input-fields");
+    
+  </script>
+</html>

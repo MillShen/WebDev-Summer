@@ -1,0 +1,103 @@
+<%- include('../templates/bootheader') -%>
+<%- include('../templates/menubar', {variant:'showcase'}) -%>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Access Routing</title>
+  </head>
+  <body>
+    <h1>Tech Showcase</h1>
+    <p>HTML tag proficiency showcase</p>
+    <div>
+      <h1>This is an h1 header</h1>
+      <p><br><a href="www.google.com">This</a> is a link to Google.com</p>
+      <p>
+        This is an embedded image of the
+        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" width="100"> logo
+      </p>
+      <p>This is a bulleted list with three items:</p>
+      <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+      </ul>
+      <p>Here is a basic, non-bootstrap table</p>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Col 1</th>
+            <th>Col 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Row 1</th>
+            <td>Cell 1</td>
+            <td>Cell 2</td>
+          </tr>
+          <tr>
+            <th>Row 2</th>
+            <td>Cell 3</td>
+            <td>Cell 4</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>This is a basic form<br</p>
+      <div class="row">
+        <div class="col">
+          <form method="post" action="/showformdata" class="bg-warning">
+            <input type="text name="fullname placeholder="With text boxes"><br>
+            <input type="button" name="b1" value="And a">
+            <input type="button" name="" value="few buttons">
+            <br><br>
+            <p>Including a few input methods:</p>
+            Like date <input type="date" name="dateFinder"><br>
+            Or color <input type="color" name="favoriteColor"><br><br>
+            Or radio Buttons<br>
+            <input type="radio" name="rb1" value="yes"> You can<br>
+            <input type="radio" name="rb2" value="no"> Only<br>
+            <input type="radio" name="rb3" value="maybe"> Choose one<br><br>
+            And a drop down Select menu
+            <select name="drop">
+              <option>Option 1</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+              <option>Option 4</option>
+            </select>
+            <br>
+            <input type="submit" value="Submit form">
+          </form>
+        </div>
+        <div class="col"></div>
+      </div>
+      <br>And here is a Bootstrap grid system<br>
+      <div class="container border">
+        <div class="row">
+          <div class="col-sm border">
+            <br>
+            <p>One of three columns</p>
+          </div>
+          <div class="col-sm bg-primary border">
+            <br>
+            <p>One of three columns</p>
+          </div>
+          <div class="col-sm bg-success border">
+            <br>
+            <p>One of three columns</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8 border">
+            <br>
+            <p>Bigger Column</p>
+          </div>
+          <div class="col-4 border">
+            <br>
+            <p>Smaller column</p>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
