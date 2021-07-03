@@ -12,6 +12,8 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "mapbox-gl": "^2.3.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.8",
+    "turf": "^3.0.14"
   }
 }

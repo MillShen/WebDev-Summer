@@ -4,16 +4,184 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet'>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
     <title>Access Routing</title>
   </head>
   <body>
-    <div class="jumbotron">
-      <h1>Let's Find a Path</h1>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+    <style>
+      #geocoder {
+        z-index: 1;
+        margin: 20px;
+      }
+      #searchContainer {
+        height: 250px;
+        margin-top: 30px;
+      }
+      .mapboxgl-ctrl-geocoder {
+        min-width: 100%;
+      }
+
+      .btn {
+        width: 20%;
+        margin: auto 40%;
+        -webkit-border-radius: 7;
+        -moz-border-radius: 7;
+        border-radius: 7px;
+        -webkit-box-shadow: 0px 1px 5px #666666;
+        -moz-box-shadow: 0px 1px 5px #666666;
+        box-shadow: 0px 1px 5px #666666;
+        color: #000000;
+        background: #ffffff;
+        padding: 6px 20px 10px 20px;
+      }
+
+      .indiv {
+        width: 50%;
+        margin: auto 25%;
+      }
+
+      .btn:hover {
+        background: #adfeff;
+        text-decoration: none;
+      }
+    </style>
+
+    <div id="searchContainer">
+      <div id="geocoderFrom" style="margin-bottom: 50px"></div>
     </div>
-    <div id="search-field">
-      <input
+
+    <div class="row" style="margin-bottom: 25px">
+      <div class="col">
+        <button type="button" class="btn indiv" onclick="fillCurrentLocation()">Use Your Location</button>
+      </div>
+      <div class="col">
+        <button id="addRoute" type="button" class="btn indiv" onclick="addSearchBox()">Route to a Second Location</button>
+      </div>
     </div>
+    <button id="mapButton" type="button" class="btn" onclick="sendData()">Let's Map!</button>
+
+    <script>
+      var locations = {};
+      var route = false;
+
+      mapboxgl.accessToken = "<%= key %>";
+
+      var geocoderFrom = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        types: 'address,country,region,place,postcode,locality,neighborhood'
+      });
+
+      var geocoderTo = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        types: 'address,country,region,place,postcode,locality,neighborhood',
+        proximity: {
+          longitude: 0,
+          latitude: 0
+        }
+      });
+
+      geocoderFrom.addTo('#geocoderFrom');
+
+      function addSearchBox() {
+        var container = document.getElementById('searchContainer');
+
+        var span1 = document.createElement('span');
+        span1.innerHTML = "Starting Point: ";
+        span1.style.fontSize = "23px";
+        container.insertBefore(span1, container.firstChild);
+
+        var span2 = document.createElement('span');
+        span2.innerHTML = "Destination: "
+        span2.style.fontSize = "23px"
+        container.appendChild(span2);
+
+        var span3 = document.createElement('span');
+        span3.innerHTML = "(Routing Functionality not yet implemented)";
+        container.appendChild(span3);
+
+        var div = document.createElement('div');
+        div.id = "geoCoderTo";
+        container.appendChild(div);
+
+        geocoderTo.addTo(div);
+
+        document.getElementById('addRoute').disabled = true;
+      }
+
+      geocoderFrom.on('result', function (e) {
+        locations['from'] = e.result;
+        geocoderFrom.setPlaceholder("Search");
+        geocoderTo.options.proximity['longitude'] = e.result.center[0];
+        geocoderTo.options.proximity['latitude'] = e.result.center[1];
+      });
+
+      geocoderTo.on('result', function (e) {
+        locations['to'] = e.result;
+        route = true;
+      });
+
+      function fillCurrentLocation() {
+        var lat, lon;
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+
+            let url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + lon +"," + lat + ".json?access_token=" + mapboxgl.accessToken;
+            fetch(url)
+            .then((resp) => resp.json())
+            .then((data) => {
+              let selection = data.features[0];
+              locations['from'] = selection;
+              geocoderTo.options.proximity['longitude'] = selection.center[0];
+              geocoderTo.options.proximity['latitude'] = selection.center[1];
+            });
+            geocoderFrom.setPlaceholder("Using Your Location");
+          });
+
+        } else {
+          alert("Can't get your position, geolocator not enabled");
+        }
+      }
+
+
+      function sendData() {
+        var removeFrame = (iframe) => {
+          iframe.parentElement.removeChild(iframe);
+        }
+
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none',
+
+        iframe.onload = () => {
+          var iframeDoc = this.document
+
+          var form = document.createElement('form');
+          form.method = "post";
+          form.action = "/map";
+          iframeDoc.body.appendChild(form);
+
+          for (var direction in locations) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = direction;
+            input.value = JSON.stringify(locations[direction]);
+            form.appendChild(input)
+          }
+
+          form.submit();
+          removeFrame(iframe);
+        }
+
+        document.body.appendChild(iframe);
+      }
+
+    </script>
   </body>
-  <script src="../searchFunctions.js"></script>
 </html>

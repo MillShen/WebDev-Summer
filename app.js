@@ -6,8 +6,12 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var apikey = require('./config/mapbox.json');
 
 var app = express();
+
+var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,17 +37,28 @@ app.get('/demo', (req, res) => {
     res.render('pages/demo');
 });
 
-app.get('/creditCalculator', (req, res) => {
-  res.render('pages/creditCalculator');
+app.get('/mapSearch', (req, res) => {
+  res.render('pages/mapSearch', {key: apikey.key});
 });
 
-app.get('/mapSearch', (req, res) => {
-  res.render('pages/mapSearch');
+app.get('/map', (req, res) => {
+    res.render('pages/map', {key: apikey.key});
+});
+
+app.post('/map', (req, res) => {
+    var from = JSON.parse(req.body.from);
+    res.locals.from = from;
+    if (req.body.to) {
+      var to = JSON.parse(req.body.to);
+      res.locals.to = to;
+    }
+    res.render('pages/map', {key: apikey.key});
 });
 
 app.post('/showformdata', (req, res) => {
   res.json(req.body);
 });
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -1,33 +1,25 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Acess Routing</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Acess Routing</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item ">
-        <a id='home' class="nav-link" href="/">Who We Are</a>
-      </li>
-      <li class="nav-item">
-        <a id='showcase' class="nav-link" href="/demo">Demo</a>
-      </li>
-      <li class="nav-item">
-        <a id='bio' class="nav-link" href="/about">About the Author</a>
-      </li>
-      <li class="nav-item">
-        <a id='credits' class="nav-link" href="/creditCalculator">Credits Calculator</a>
-      </li>
-      <li class="nav-item">
-        <a id='map' class="nav-link" href="/mapSearch">Mapping</a>
-      </li>
-    </ul>
-
-
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a id='showcase' class="nav-link" href="/demo">Demo (HW1)</a>
+        </li>
+        <li class="nav-item">
+          <a id='bio' class="nav-link" href="/about">About the Author (HW1)</a>
+        </li>
+        <li class="nav-item">
+          <a id='map' class="nav-link" href="/mapSearch">Map Search</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 <script type="text/javascript">
-  let variant = '<%-variant%>';
-  var node = document.getElementById(variant);
-  node.style.fontWeight = 'bold';
+  document.getElementById("<%- variant %>").style.fontWeight = 'bold';
 </script>

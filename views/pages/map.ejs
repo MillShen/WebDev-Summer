@@ -1,0 +1,96 @@
+<%- include('../templates/bootheader') -%>
+<%- include('../templates/menubar', {variant:'map'}) -%>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Display a map on a webpage</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <style>
+      #content {
+        width: 100%;
+        margin-top: 50px;
+      }
+      #container {
+        width: 600px;
+        height: 800px;
+        margin: auto;
+        display: grid;
+      }
+      #maparea {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        height: 50%;
+        visibility: hidden;
+      }
+      #static {
+        background-image: url('https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s-l+000(<%= from.center[0] %>,<%= from.center[1] %>)/<%= from.center[0] %>, <%= from.center[1] %>,11/600x400?access_token=<%= key %>');
+        width: 100%;
+        height: 50%;
+        grid-column: 1;
+        grid-row: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="container">
+        <div id="maparea"></div>
+        <div id="static"></div>
+      </div>
+    </div>
+    <script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+    <script>
+      mapboxgl.accessToken = '<%= key %>';
+      var map = new mapboxgl.Map({
+        container: 'maparea', // container id
+        style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+        center: [<%= from.center[0] %>, <%= from.center[1] %>], // starting position [lng, lat]
+        zoom: 11 // starting zoom
+      });
+
+      var nav = new mapboxgl.NavigationControl({
+        showCompass: false
+      });
+      map.addControl(nav, 'top-right');
+
+      var start = new mapboxgl.Marker()
+      .setLngLat([<%= from.center[0] %>, <%= from.center[1] %>])
+      .addTo(map);
+
+      <% if (typeof to !== 'undefined') { %>
+        var destination = new mapboxgl.Marker()
+        .setLngLat([<%= to.center[0] %>, <%= to.center[1] %>])
+        .addTo(map);
+
+        var fp = start.getLngLat();
+        var sp = destination.getLngLat();
+        console.log(fp);
+        console.log(sp);
+        console.log(fp['lng']-sp['lat']);
+        var midLon = (fp['lng']+sp['lng'])/2;
+        var midLat = (fp['lat']+sp['lat'])/2
+        map.flyTo({
+          center: [midLon, midLat],
+          zoom: Math.round(-Math.log2(fp.distanceTo(sp)/78271.484))+8,
+          speed: 0.5,
+          curve: 0.7
+        });
+
+      <% } %>
+
+      map.on('load', function (e) {
+        var mapContainerEl = document.getElementById('maparea');
+        mapContainerEl.style.visibility = 'visible';
+      });
+
+    </script>
+  </body>
+</html>
